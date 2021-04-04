@@ -24,7 +24,7 @@ First, we create a folder:
     test command: 
     git repository: 
     keywords: nodejs, express, sequelize, mysql, rest, api
-    author: bezkoder
+    author: Jonayeid
     license: (ISC)
 
     Is this ok? (yes) yes
@@ -58,7 +58,7 @@ In the root folder, let’s create a new server.js file:
 
     // simple route
     app.get("/", (req, res) => {
-      res.json({ message: "Welcome to bezkoder application." });
+      res.json({ message: "Welcome to your application." });
     });
 
     // set port, listen for requests
