@@ -27,6 +27,15 @@ const validateStudentCreate = (req, res) => {
         // check('image', 'You must select an image.').notEmpty(),
     ];
 }
+//validating registration data...
+const validateStudentUpdate = (req, res) => {
+    return [
+        check('name').isLength({ min: 3, max: 20 }).trim().escape().withMessage('Name should be atleast 3-20 characters.'),
+        // check('email').isEmail().normalizeEmail().withMessage('Please enter a valid E-mail.'),
+        // check('image').notEmpty().withMessage('Please a cover photo.'),
+        // check('image', 'You must select an image.').notEmpty(),
+    ];
+}
 
 
-module.exports = { validate, validateStudentCreate }
+module.exports = { validate, validateStudentCreate, validateStudentUpdate }

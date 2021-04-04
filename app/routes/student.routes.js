@@ -1,11 +1,6 @@
-const { uploadFile, form } = require('../middleware/multer.js');
-
-// ...rest of the initial code omitted for simplicity.
-const { body } = require('express-validator');
-
+const { uploadFile } = require('../middleware/multer.js');
 const students = require ('../controllers/student.controller.js');
 const valid = require ('../middleware/validator');
-
 var router = require("express").Router();
 
 module.exports= app => {
@@ -15,6 +10,13 @@ module.exports= app => {
     router.get("/", students.findAll);
 
     router.get("/:id", students.findOne);
+
+    // Update a new Tutorial
+    router.put("/:id", uploadFile, valid.validateStudentUpdate(), valid.validate, students.update);
+
+    router.delete("/:id", students.delete);
+
+    router.delete("/", students.deleteAll);
 
     app.use('/api/students', router);
 }

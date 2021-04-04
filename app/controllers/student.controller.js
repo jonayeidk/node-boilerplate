@@ -3,7 +3,7 @@ const Student = db.students;
 const Op = db.Sequelize.Op;
 
 const { validationResult } = require('express-validator');
-// Create and Save a new Tutorial
+// Create and Save a new Student
 exports.create = (req, res) => {
 
     const errors = validationResult(req);
@@ -14,7 +14,7 @@ exports.create = (req, res) => {
    
     if (!req.file){
         res.status(401).send({
-            message: "Content can not be empty!"
+            message: "Image can not be empty!"
         });
         return;
     }
@@ -33,14 +33,14 @@ exports.create = (req, res) => {
     .catch(err => {
         res.status(500).send({
             message:
-                err.message || "Some error occurred while creating the Tutorial."
+                err.message || "Some error occurred while creating the Student."
         });
     });
     
 
 };
 
-// Retrieve all Tutorials from the database.
+// Retrieve all Students from the database.
 exports.findAll = (req, res) => {
 
     const name = req.query.name;
@@ -55,13 +55,13 @@ exports.findAll = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving tutorials."
+                    err.message || "Some error occurred while retrieving Students."
             });
         });
 
 };
 
-// Find a single Tutorial with an id
+// Find a single Student with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
@@ -72,27 +72,98 @@ exports.findOne = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving tutorials."
+                    err.message || "Some error occurred while retrieving Students."
             });
         });
 };
 
-// Update a Tutorial by the id in the request
+// Update a Student by the id in the request
 exports.update = (req, res) => {
+    const id = req.params.id;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    
+    var student_data = {
+        name: req.body.name,
+        email: req.body.email,
+    };
+
+    if (req.file) {
+        student_data['image'] =  req.file.destination + req.file.filename;
+    }
+
+
+    Student.update(student_data,{
+        where:{id:id}
+    }).then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Student was updated successfully."
+            });
+        } else {
+            res.send({
+                message: `Cannot update Student with id=${id}. Maybe Student was not found or req.body is empty!`
+            });
+        }
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating Student with id=" + id
+            });
+        });
 
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Student with the specified id in the request
 exports.delete = (req, res) => {
 
+    const id = req.params.id;
+
+    
+    Student.destroy({
+        where: { id: id }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Student was deleted successfully!"
+            });
+        } else {
+            res.send({
+                message: `Cannot delete Student with id=${id}. Maybe Student was not found!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Could not delete Student with id=" + id
+        });
+    });
+
 };
 
-// Delete all Tutorials from the database.
+// Delete all Students from the database.
 exports.deleteAll = (req, res) => {
 
+    Student.destroy({
+        where: {},
+        truncate: false
+    })
+        .then(nums => {
+            res.send({ message: `${nums} Students were deleted successfully!` });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while removing all Students."
+            });
+        });
 };
 
-// Find all published Tutorials
+// Find all published Students
 exports.findAllPublished = (req, res) => {
 
 };
